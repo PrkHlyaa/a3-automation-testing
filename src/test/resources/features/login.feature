@@ -3,7 +3,7 @@ Feature: Login JTK Learn
   Saya ingin bisa login ke platform JTK Learn
   Agar saya bisa mengakses materi perkuliahan
 
-  # TC: Punya teman - Login Pelajar valid
+  # TC: Login Pelajar valid
   Scenario: Login berhasil dengan akun valid
     Given pengguna membuka halaman login JTK Learn
     When  pengguna memasukkan email "Far@example.com"
@@ -20,4 +20,4 @@ Feature: Login JTK Learn
     And   pengguna memasukkan password "apapun123"
     And   pengguna mengklik tombol Login
     Then  muncul pesan error login
-    And   pengguna tetap berada di halaman Login
+    And   pengguna tetap berada di halaman Login
