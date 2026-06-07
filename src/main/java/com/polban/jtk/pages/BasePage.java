@@ -1,4 +1,4 @@
-package com.polban.jtk.actions;
+package com.polban.jtk.pages;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -7,11 +7,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import java.time.Duration;
 
-/**
- * Base class untuk semua Page Object.
- * Menyediakan driver, wait, dan utility methods yang digunakan bersama.
- * Locator masing-masing halaman ada di package {@code com.polban.jtk.locators}.
- */
 public class BasePage {
 
     protected WebDriver driver;

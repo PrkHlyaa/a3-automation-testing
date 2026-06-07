@@ -11,14 +11,18 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
  */
 public class QuizPage extends BasePage {
 
+    private final QuizPageLocators locators = new QuizPageLocators();
+
     public QuizPage(WebDriver driver) {
         super(driver);
+        initLocators(locators);  // menghidupkan @FindBy pada QuizPageLocators
     }
 
     // ── ACTIONS ────────────────────────────────────────────────────
 
     /** Klik menu sidebar berdasarkan nama kuis yang dilempar dari Gherkin */
     public void klikMenuKuisDiSidebar(String namaKuis) {
+        // Locator dinamis — tetap menggunakan By karena @FindBy tidak mendukung parameter runtime
         WebElement menuKuis = wait.until(
                 ExpectedConditions.elementToBeClickable(QuizPageLocators.menuKuis(namaKuis))
         );
@@ -28,10 +32,8 @@ public class QuizPage extends BasePage {
     /** Verifikasi apakah form "Mulai Kuis" sudah muncul di layar utama */
     public boolean sudahMasukHalamanPersiapanKuis() {
         try {
-            WebElement quizBox = wait.until(
-                    ExpectedConditions.visibilityOfElementLocated(QuizPageLocators.QUIZ_BOX)
-            );
-            return quizBox.isDisplayed();
+            wait.until(ExpectedConditions.visibilityOf(locators.quizBox));
+            return locators.quizBox.isDisplayed();
         } catch (Exception e) {
             return false;
         }
@@ -39,9 +41,7 @@ public class QuizPage extends BasePage {
 
     /** Mengambil teks judul kuis untuk dicocokkan dengan ekspektasi */
     public String ambilJudulKuis() {
-        WebElement elemenJudul = wait.until(
-                ExpectedConditions.visibilityOfElementLocated(QuizPageLocators.QUIZ_TITLE)
-        );
-        return elemenJudul.getText().trim();
+        wait.until(ExpectedConditions.visibilityOf(locators.quizTitle));
+        return locators.quizTitle.getText().trim();
     }
 }

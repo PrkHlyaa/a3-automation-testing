@@ -1,49 +1,48 @@
-package com.polban.jtk.actions;
-
-import java.time.Duration;
+package com.polban.jtk.pages;
 
 import com.polban.jtk.locators.LoginPageLocators;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
-/**
- * Action methods untuk halaman Login JTK Learn.
- * Semua selektor elemen direferensikan dari {@link LoginPageLocators}.
- */
 public class LoginPage extends BasePage {
 
-    private final LoginPageLocators locators = new LoginPageLocators();
+    // Locators di-init via PageFactory di constructor
+    private final LoginPageLocators loc = new LoginPageLocators();
 
+    // ── Constructor ──
     public LoginPage(WebDriver driver) {
         super(driver);
-        initLocators(locators);  // menghidupkan @FindBy pada LoginPageLocators
+        initLocators(loc);  // menghidupkan @FindBy pada LoginPageLocators
     }
 
-    // ── ACTIONS ────────────────────────────────────────────────────
+    // ── Metode aksi ──
 
     public void masukkanEmail(String email) {
-        wait.until(ExpectedConditions.visibilityOf(locators.fieldEmail));
-        locators.fieldEmail.clear();
-        locators.fieldEmail.sendKeys(email);
-        System.out.println("Email field = " + locators.fieldEmail.getAttribute("value"));
+        loc.fieldEmail.clear();
+        loc.fieldEmail.sendKeys(email);
+
+        System.out.println(
+                "Email field = " +
+                        loc.fieldEmail.getAttribute("value")
+        );
     }
 
     public void masukkanPassword(String password) {
-        wait.until(ExpectedConditions.visibilityOf(locators.fieldPassword));
-        locators.fieldPassword.clear();
-        locators.fieldPassword.sendKeys(password);
-        System.out.println("Password length = " + locators.fieldPassword.getAttribute("value").length());
+        loc.fieldPassword.clear();
+        loc.fieldPassword.sendKeys(password);
+
+        System.out.println(
+                "Password length = " +
+                        loc.fieldPassword.getAttribute("value").length()
+        );
     }
 
     public void klikLogin() {
         System.out.println("Sebelum klik: " + driver.getCurrentUrl());
 
-        wait.until(ExpectedConditions.elementToBeClickable(locators.tombolLogin));
-        locators.tombolLogin.click();
+        loc.tombolLogin.click();
 
         try {
-            Thread.sleep(1000);
+            Thread.sleep(500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -54,8 +53,10 @@ public class LoginPage extends BasePage {
     // TC 1.1.5 — Cek apakah SweetAlert2 error popup muncul
     public boolean adaPesanError() {
         try {
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-            wait.until(ExpectedConditions.visibilityOf(locators.swalPopup));
+            // Tunggu maksimal 5 detik supaya popup sempat muncul
+            org.openqa.selenium.support.ui.WebDriverWait wait =
+                new org.openqa.selenium.support.ui.WebDriverWait(driver, java.time.Duration.ofSeconds(5));
+            wait.until(org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf(loc.swalPopup));
             System.out.println("[TC 1.1.5] SweetAlert2 popup ditemukan!");
             return true;
         } catch (Exception e) {

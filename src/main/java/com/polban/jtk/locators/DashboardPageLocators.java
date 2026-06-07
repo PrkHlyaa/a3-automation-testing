@@ -1,19 +1,24 @@
 package com.polban.jtk.locators;
 
-import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
 
 /**
  * Semua web locator untuk halaman Dashboard JTK Learn.
  * Kelas ini HANYA berisi definisi selektor — tidak ada logika aksi.
+ * Menggunakan @FindBy (Page Factory pattern) untuk deklarasi elemen.
  */
 public class DashboardPageLocators {
 
     /** Menu profil pengguna di navbar */
-    public static final By MENU_PROFIL   = By.cssSelector("#navbarNav > ul > li.nav-name.dropdown > a");
+    @FindBy(css = "#navbarNav > ul > li.nav-name.dropdown > a")
+    public WebElement menuProfil;
 
     /** Ikon atau tombol logout */
-    public static final By TOMBOL_KELUAR = By.cssSelector(".logout-icon, img[alt='Logout Icon']");
+    @FindBy(css = ".logout-icon, img[alt='Logout Icon']")
+    public WebElement tombolKeluar;
 
     /** Field email di halaman Login — digunakan untuk verifikasi sudah kembali ke Login */
-    public static final By FIELD_EMAIL   = By.cssSelector("input[placeholder='Masukkan email']");
+    @FindBy(css = "input[placeholder='Masukkan email']")
+    public WebElement fieldEmail;
 }
