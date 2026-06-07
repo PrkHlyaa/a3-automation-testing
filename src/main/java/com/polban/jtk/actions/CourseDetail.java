@@ -1,56 +1,56 @@
-package com.polban.jtk.pages;
+package com.polban.jtk.actions;
 
 import java.time.Duration;
 
-import org.openqa.selenium.By;
+import com.polban.jtk.locators.CourseDetailLocators;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.JavascriptExecutor;
 
+/**
+ * Action methods untuk halaman Course Detail JTK Learn.
+ * Semua selektor elemen direferensikan dari {@link CourseDetailLocators}.
+ */
 public class CourseDetail extends BasePage {
 
     public CourseDetail(WebDriver driver) {
         super(driver);
     }
 
-    public void pilihCourse(String namaCourse) {
+    // ── ACTIONS ────────────────────────────────────────────────────
 
-        WebElement card = driver.findElement(
-                By.xpath(
-                        "//h6[text()='" + namaCourse + "']/ancestor::div[contains(@class,'custom-card')]"
-                )
-        );
+    /** Klik card kursus berdasarkan nama yang ditampilkan */
+    public void pilihCourse(String namaCourse) {
+        WebElement card = driver.findElement(CourseDetailLocators.cardCourse(namaCourse));
 
         ((JavascriptExecutor) driver)
                 .executeScript("arguments[0].scrollIntoView({block:'center'});", card);
-
         ((JavascriptExecutor) driver)
                 .executeScript("arguments[0].click();", card);
     }
 
+    /** Klik tombol atau link berdasarkan teks, menangani SweetAlert2 jika masih terbuka */
     public void klikTombol(String namaTombol) {
-
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
         // Tutup SweetAlert2 popup jika masih muncul (agar tidak menghalangi klik)
         try {
-            WebElement swalOverlay = driver.findElement(By.cssSelector(".swal2-container"));
+            WebElement swalOverlay = driver.findElement(CourseDetailLocators.SWAL_CONTAINER);
             if (swalOverlay.isDisplayed()) {
                 System.out.println("[klikTombol] SweetAlert2 popup terdeteksi, menutupnya dulu...");
                 // Klik tombol OK/Confirm di dalam popup jika ada
                 try {
-                    WebElement swalConfirm = driver.findElement(By.cssSelector(".swal2-confirm"));
-                    swalConfirm.click();
+                    driver.findElement(CourseDetailLocators.SWAL_CONFIRM).click();
                 } catch (Exception e) {
                     // Jika tidak ada tombol confirm, tekan Escape untuk menutup
-                    driver.findElement(By.tagName("body"))
+                    driver.findElement(CourseDetailLocators.TAG_BODY)
                             .sendKeys(org.openqa.selenium.Keys.ESCAPE);
                 }
                 // Tunggu popup benar-benar hilang
                 wait.until(ExpectedConditions.invisibilityOfElementLocated(
-                        By.cssSelector(".swal2-container")));
+                        CourseDetailLocators.SWAL_CONTAINER));
                 System.out.println("[klikTombol] Popup sudah ditutup.");
             }
         } catch (Exception ignored) {
@@ -62,12 +62,7 @@ public class CourseDetail extends BasePage {
         // yang kebetulan juga mengandung teks yang sama.
         // [1] memastikan hanya ambil elemen pertama yang cocok.
         WebElement tombol = wait.until(
-                ExpectedConditions.presenceOfElementLocated(
-                        By.xpath(
-                                "(//button[contains(normalize-space(.), '" + namaTombol + "')]" +
-                                " | //a[contains(normalize-space(.), '" + namaTombol + "')])[1]"
-                        )
-                )
+                ExpectedConditions.presenceOfElementLocated(CourseDetailLocators.tombol(namaTombol))
         );
 
         System.out.println("[klikTombol] Ditemukan: <" + tombol.getTagName()
@@ -80,19 +75,18 @@ public class CourseDetail extends BasePage {
                 .executeScript("arguments[0].click();", tombol);
 
         // Tunggu sebentar untuk halaman bereaksi
-        try { Thread.sleep(2000); } catch (InterruptedException e) { e.printStackTrace(); }
+        try { Thread.sleep(5000); } catch (InterruptedException e) { e.printStackTrace(); }
         System.out.println("[klikTombol] URL setelah klik: " + driver.getCurrentUrl());
     }
 
+    /** Cek apakah browser sudah berada di halaman detail course */
     public boolean sudahMasukCourseDetail() {
-
         String url = driver.getCurrentUrl();
-
-        return url.contains("learn-course")
-                || url.contains("course");
+        return url.contains("learn-course") || url.contains("course");
     }
 
     // TC 2.3.2 / TC-11 — Navigasi langsung ke halaman kursus berdasarkan ID
+    /** Buka halaman course berdasarkan ID, lalu tunggu sampai URL mengandung "learn-course" */
     public void bukaKursusDenganId(String idKursus) {
         String url = "https://polban-space.cloudias79.com/jtk-learn/learn-course/" + idKursus;
         System.out.println("[TC-11] Membuka URL kursus: " + url);
@@ -104,6 +98,7 @@ public class CourseDetail extends BasePage {
     }
 
     // TC 2.3.2 / TC-11 — Verifikasi daftar kursus yang diikuti pelajar ditampilkan
+    /** Verifikasi bahwa daftar kursus yang diikuti pelajar muncul di halaman */
     public boolean daftarKursusDitampilkan() {
         String url = driver.getCurrentUrl();
         System.out.println("[TC-11] Verifikasi URL setelah klik Kursus Saya: " + url);
@@ -119,9 +114,7 @@ public class CourseDetail extends BasePage {
         try {
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
             WebElement daftar = wait.until(
-                    ExpectedConditions.presenceOfElementLocated(
-                            By.xpath("//*[contains(@class,'custom-card') or contains(@class,'course-card') or contains(@class,'card')]")
-                    )
+                    ExpectedConditions.presenceOfElementLocated(CourseDetailLocators.CARD_KURSUS)
             );
             adaKartuKursus = daftar.isDisplayed();
             System.out.println("[TC-11] Elemen daftar kursus ditemukan.");

@@ -1,6 +1,6 @@
 package com.polban.jtk.stepdefinitions;
 
-import com.polban.jtk.pages.DashboardPage;
+import com.polban.jtk.actions.DashboardPage;
 import io.cucumber.java.en.*;
 import org.junit.jupiter.api.Assertions;
 

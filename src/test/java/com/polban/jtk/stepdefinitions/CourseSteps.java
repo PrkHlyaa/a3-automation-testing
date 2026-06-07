@@ -1,7 +1,7 @@
 package com.polban.jtk.stepdefinitions;
 
-import com.polban.jtk.pages.CourseDetail;
-import com.polban.jtk.pages.LoginPage;
+import com.polban.jtk.actions.CourseDetail;
+import com.polban.jtk.actions.LoginPage;
 
 import io.cucumber.java.en.*;
 import org.junit.jupiter.api.Assertions;

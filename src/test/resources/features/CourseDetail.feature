@@ -11,8 +11,7 @@ Feature: Course Detail JTK Learn
 
   # TC ID: 2.3.2 / TC-11 - Positif - Nobby
   # Klik Kursus Saya — menampilkan daftar kursus yang diikuti pelajar
-  # Test Data: ID_Pelajar=26, ID_Kursus=33, Akun Pelajar=Far, Nama Kursus=FR007
+  # Test Data: ID_Pelajar=26, Akun Pelajar=Far, Nama Kursus=FR007
   Scenario: Klik Kursus Saya menampilkan daftar kursus yang diikuti pelajar
-    When pengguna membuka kursus dengan ID "33"
-    And  pengguna mengklik tombol "Kursus Saya"
+    When pengguna mengklik tombol "Kursus Saya"
     Then sistem menampilkan daftar kursus yang diikuti pelajar

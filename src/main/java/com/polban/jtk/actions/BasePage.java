@@ -1,12 +1,16 @@
-package com.polban.jtk.pages;
+package com.polban.jtk.actions;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import java.time.Duration;
 
+/**
+ * Base class untuk semua Page Object.
+ * Menyediakan driver, wait, dan utility methods yang digunakan bersama.
+ * Locator masing-masing halaman ada di package {@code com.polban.jtk.locators}.
+ */
 public class BasePage {
 
     protected WebDriver driver;
@@ -16,8 +20,6 @@ public class BasePage {
     public BasePage(WebDriver driver) {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        // Ini yang "menghidupkan" semua @FindBy di kelas turunan
-        PageFactory.initElements(driver, this);
     }
 
     // Klik elemen — tunggu sampai bisa diklik dulu
