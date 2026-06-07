@@ -58,4 +58,15 @@ public class LoginSteps {
                 "Seharusnya ada pesan error!"
         );
     }
+
+    // TC 1.1.5 / 1.5 — Verifikasi pengguna tetap di halaman Login setelah gagal login
+    @And("pengguna tetap berada di halaman Login")
+    public void verifikasiTetapDiHalamanLogin() {
+        System.out.println("[TC 1.1.5] Memeriksa apakah pengguna masih di halaman Login...");
+        Assertions.assertTrue(
+                loginPage.masihDiHalamanLogin(),
+                "[TC 1.1.5] GAGAL: Pengguna seharusnya tetap di halaman Login setelah login gagal!"
+        );
+        System.out.println("[TC 1.1.5] LULUS: Pengguna tetap di halaman Login — sistem menolak username tidak terdaftar.");
+    }
 }

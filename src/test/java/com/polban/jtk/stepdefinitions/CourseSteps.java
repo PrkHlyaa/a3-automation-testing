@@ -45,4 +45,21 @@ public class CourseSteps {
                 "Seharusnya masuk ke halaman detail course"
         );
     }
+
+    // TC 2.3.2 / TC-11 — Membuka kursus langsung berdasarkan ID (ID_Kursus=33)
+    @When("pengguna membuka kursus dengan ID {string}")
+    public void penggunaMembukKursusDenganId(String idKursus) {
+        System.out.println("[TC-11] Membuka kursus dengan ID: " + idKursus);
+        coursePage.bukaKursusDenganId(idKursus);
+    }
+
+    // TC 2.3.2 / TC-11 — Verifikasi daftar kursus yang diikuti pelajar muncul
+    @Then("sistem menampilkan daftar kursus yang diikuti pelajar")
+    public void sistemMenunjukkanDaftarKursus() {
+        Assertions.assertTrue(
+                coursePage.daftarKursusDitampilkan(),
+                "[TC-11] GAGAL: Sistem seharusnya menampilkan daftar kursus yang diikuti pelajar!"
+        );
+        System.out.println("[TC-11] LULUS: Daftar kursus yang diikuti pelajar ditampilkan.");
+    }
 }

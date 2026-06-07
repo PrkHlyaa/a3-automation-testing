@@ -18,8 +18,9 @@ public class LoginPage extends BasePage {
     @FindBy(css = "button[type='submit']") // tombol submit
     private WebElement tombolLogin;
 
-    @FindBy(css = ".alert, .error, #loginerrormessage")
-    private WebElement pesanError;
+    // Error ditampilkan sebagai SweetAlert2 popup (class: swal2-popup)
+    @FindBy(css = ".swal2-popup")
+    private WebElement pesanErrorPopup;
 
     // ── Constructor ──
     public LoginPage(WebDriver driver) {
@@ -62,13 +63,31 @@ public class LoginPage extends BasePage {
         System.out.println("5 detik setelah klik: " + driver.getCurrentUrl());
     }
 
+    // TC 1.1.5 — Cek apakah SweetAlert2 error popup muncul
     public boolean adaPesanError() {
-        return terlihat(pesanError);
+        try {
+            // Tunggu maksimal 5 detik supaya popup sempat muncul
+            org.openqa.selenium.support.ui.WebDriverWait wait =
+                new org.openqa.selenium.support.ui.WebDriverWait(driver, java.time.Duration.ofSeconds(5));
+            wait.until(org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf(pesanErrorPopup));
+            System.out.println("[TC 1.1.5] SweetAlert2 popup ditemukan!");
+            return true;
+        } catch (Exception e) {
+            System.out.println("[TC 1.1.5] Popup tidak ditemukan: " + e.getMessage());
+            return false;
+        }
     }
 
     public boolean sudahDiDashboard() {
         return driver.getCurrentUrl().equals(
                 "https://polban-space.cloudias79.com/jtk-learn/dashboard-pelajar"
         );
+    }
+
+    // TC 1.1.5 / 1.5 — Verifikasi pengguna masih di halaman Login (gagal login)
+    public boolean masihDiHalamanLogin() {
+        String url = driver.getCurrentUrl();
+        System.out.println("[TC 1.1.5] URL sekarang: " + url);
+        return url.contains("jtk-learn/") && !url.contains("dashboard");
     }
 }
