@@ -3,6 +3,7 @@ Feature: Login JTK Learn
   Saya ingin bisa login ke platform JTK Learn
   Agar saya bisa mengakses materi perkuliahan
 
+  @Farida
   # TC: Login Pelajar valid
   Scenario: Login berhasil dengan akun valid
     Given pengguna membuka halaman login JTK Learn
@@ -11,6 +12,7 @@ Feature: Login JTK Learn
     And   pengguna mengklik tombol Login
     Then  pengguna berhasil masuk ke halaman dashboard
 
+  @Nobby
   # TC ID: 1.1.5 / 1.5 - Negative - Nobby
   # Memverifikasi sistem menolak login dengan username yang tidak terdaftar
   # Test Data: Username=tidakterdaftar@example.com, Password=apapun123

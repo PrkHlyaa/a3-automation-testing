@@ -8,7 +8,7 @@ import org.openqa.selenium.support.FindBy;
  * Kelas ini HANYA berisi definisi selektor — tidak ada logika aksi.
  * Menggunakan @FindBy (Page Factory pattern) untuk deklarasi elemen.
  */
-public class DashboardPageLocators {
+public class LogoutPageLocators {
 
     /** Menu profil pengguna di navbar */
     @FindBy(css = "#navbarNav > ul > li.nav-name.dropdown > a")

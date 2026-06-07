@@ -6,6 +6,7 @@ Feature: Logout JTK Learn
   Background:
     Given pengguna sudah login ke JTK Learn
 
+  @Zahra
   Scenario: Logout berhasil melalui menu profil
     When pengguna mengklik menu profil
     And pengguna mengklik tombol Keluar

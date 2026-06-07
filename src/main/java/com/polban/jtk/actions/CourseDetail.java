@@ -134,7 +134,7 @@ public class CourseDetail extends BasePage {
         return urlSesuai || adaKartuKursus;
     }
 
-    // ── QUIZ ACTIONS ──────────────────────────────────────────────
+    // TC 07 Course Detail / Quiz + Validasi Akses Halaman Kuis dan Tampilan Judul
 
     /** Klik menu sidebar berdasarkan nama kuis yang dilempar dari Gherkin */
     public void klikMenuKuisDiSidebar(String namaKuis) {

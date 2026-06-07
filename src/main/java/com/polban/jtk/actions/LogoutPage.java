@@ -1,20 +1,20 @@
 package com.polban.jtk.actions;
 
-import com.polban.jtk.locators.DashboardPageLocators;
+import com.polban.jtk.locators.LogoutPageLocators;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 /**
  * Action methods untuk halaman Dashboard JTK Learn.
- * Semua selektor elemen direferensikan dari {@link DashboardPageLocators}.
+ * Semua selektor elemen direferensikan dari {@link LogoutPageLocators}.
  */
-public class DashboardPage extends BasePage {
+public class LogoutPage extends BasePage {
 
-    private final DashboardPageLocators locators = new DashboardPageLocators();
+    private final LogoutPageLocators locators = new LogoutPageLocators();
 
-    public DashboardPage(WebDriver driver) {
+    public LogoutPage(WebDriver driver) {
         super(driver);
-        initLocators(locators);  // menghidupkan @FindBy pada DashboardPageLocators
+        initLocators(locators);  // menghidupkan @FindBy pada LogoutPageLocators
     }
 
     // ── ACTIONS ────────────────────────────────────────────────────
