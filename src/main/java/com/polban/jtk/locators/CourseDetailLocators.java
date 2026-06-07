@@ -5,12 +5,14 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
 /**
- * Semua web locator untuk halaman Course Detail JTK Learn.
+ * Semua web locator untuk halaman Course Detail & Quiz JTK Learn.
  * Kelas ini HANYA berisi definisi selektor — tidak ada logika aksi.
  * Menggunakan @FindBy (Page Factory pattern) untuk deklarasi elemen statis,
  * dan metode By untuk locator dinamis.
  */
 public class CourseDetailLocators {
+
+    // ── Course Detail ─────────────────────────────────────────────
 
     /** Overlay SweetAlert2 yang muncul setelah aksi tertentu */
     @FindBy(css = ".swal2-container")
@@ -33,6 +35,18 @@ public class CourseDetailLocators {
     /** Teks yang muncul saat tidak ada kursus (fallback verifikasi halaman my-courses sudah terbuka) */
     @FindBy(css = ".tab-content, .course-list, [class*='course']")
     public WebElement halamanMyCourses;
+
+    // ── Quiz ──────────────────────────────────────────────────────
+
+    /** Kotak panduan kuis (memuat durasi, deskripsi, dan tombol mulai) */
+    @FindBy(css = ".quiz-guide-box")
+    public WebElement quizBox;
+
+    /** Elemen judul kuis di dalam heading */
+    @FindBy(css = ".quiz-title h3 b")
+    public WebElement quizTitle;
+
+    // ── Locator Dinamis (tetap pakai By) ──────────────────────────
 
     /**
      * Locator card kursus berdasarkan nama yang ditampilkan (dinamis).
@@ -59,6 +73,19 @@ public class CourseDetailLocators {
         return By.xpath(
                 "(//button[contains(normalize-space(.), '" + namaTombol + "')]" +
                 " | //a[contains(normalize-space(.), '" + namaTombol + "')])[1]"
+        );
+    }
+
+    /**
+     * Locator item menu sidebar kuis berdasarkan nama (dinamis).
+     * Mencari {@code <li>} dengan class 'learn-list-item' yang teksnya mengandung namaKuis.
+     * <p>Tidak bisa menggunakan @FindBy karena parameternya dinamis.</p>
+     *
+     * @param namaKuis nama kuis yang ditampilkan di sidebar
+     */
+    public static By menuKuis(String namaKuis) {
+        return By.xpath(
+                "//li[contains(@class, 'learn-list-item') and contains(., '" + namaKuis + "')]"
         );
     }
 }

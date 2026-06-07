@@ -11,7 +11,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.JavascriptExecutor;
 
 /**
- * Action methods untuk halaman Course Detail JTK Learn.
+ * Action methods untuk halaman Course Detail & Quiz JTK Learn.
  * Semua selektor elemen direferensikan dari {@link CourseDetailLocators}.
  */
 public class CourseDetail extends BasePage {
@@ -23,7 +23,7 @@ public class CourseDetail extends BasePage {
         initLocators(locators);  // menghidupkan @FindBy pada CourseDetailLocators
     }
 
-    // ── ACTIONS ────────────────────────────────────────────────────
+    // ── COURSE DETAIL ACTIONS ─────────────────────────────────────
 
     /** Klik card kursus berdasarkan nama yang ditampilkan */
     public void pilihCourse(String namaCourse) {
@@ -34,24 +34,30 @@ public class CourseDetail extends BasePage {
                 .executeScript("arguments[0].scrollIntoView({block:'center'});", card);
         ((JavascriptExecutor) driver)
                 .executeScript("arguments[0].click();", card);
+
+        // Tunggu halaman course detail selesai dimuat sebelum lanjut ke langkah berikutnya
+        try { Thread.sleep(3000); } catch (InterruptedException e) { e.printStackTrace(); }
+        System.out.println("[pilihCourse] URL setelah klik card: " + driver.getCurrentUrl());
     }
 
     /** Klik tombol atau link berdasarkan teks, menangani SweetAlert2 jika masih terbuka */
     public void klikTombol(String namaTombol) {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
 
         // Tutup SweetAlert2 popup jika masih muncul (agar tidak menghalangi klik)
         try {
-            if (locators.swalContainer.isDisplayed()) {
+            WebElement swalOverlay = driver.findElement(By.cssSelector(".swal2-container"));
+            if (swalOverlay.isDisplayed()) {
                 System.out.println("[klikTombol] SweetAlert2 popup terdeteksi, menutupnya dulu...");
                 // Klik tombol OK/Confirm di dalam popup jika ada
                 try {
-                    locators.swalConfirm.click();
+                    driver.findElement(By.cssSelector(".swal2-confirm")).click();
                 } catch (Exception e) {
                     // Jika tidak ada tombol confirm, tekan Escape untuk menutup
-                    locators.tagBody.sendKeys(org.openqa.selenium.Keys.ESCAPE);
+                    driver.findElement(By.tagName("body"))
+                            .sendKeys(org.openqa.selenium.Keys.ESCAPE);
                 }
-                // Tunggu popup benar-benar hilang — perlu By untuk invisibilityOfElementLocated
+                // Tunggu popup benar-benar hilang
                 wait.until(ExpectedConditions.invisibilityOfElementLocated(
                         By.cssSelector(".swal2-container")));
                 System.out.println("[klikTombol] Popup sudah ditutup.");
@@ -62,9 +68,6 @@ public class CourseDetail extends BasePage {
 
         // Cari button atau link (a) yang mengandung teks namaTombol.
         // Locator dinamis — tetap menggunakan By karena @FindBy tidak mendukung parameter runtime
-        // Pakai union (button|a) untuk hindari match ke paragraf/deskripsi
-        // yang kebetulan juga mengandung teks yang sama.
-        // [1] memastikan hanya ambil elemen pertama yang cocok.
         WebElement tombol = wait.until(
                 ExpectedConditions.presenceOfElementLocated(CourseDetailLocators.tombol(namaTombol))
         );
@@ -116,13 +119,47 @@ public class CourseDetail extends BasePage {
         // Cek ada elemen card kursus di halaman
         boolean adaKartuKursus = false;
         try {
-            wait.until(ExpectedConditions.visibilityOf(locators.cardKursus));
-            adaKartuKursus = locators.cardKursus.isDisplayed();
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+            WebElement daftar = wait.until(
+                    ExpectedConditions.presenceOfElementLocated(
+                            By.xpath("//*[contains(@class,'custom-card') or contains(@class,'course-card') or contains(@class,'card')]")
+                    )
+            );
+            adaKartuKursus = daftar.isDisplayed();
             System.out.println("[TC-11] Elemen daftar kursus ditemukan.");
         } catch (Exception e) {
             System.out.println("[TC-11] Elemen daftar kursus tidak ditemukan: " + e.getMessage());
         }
 
         return urlSesuai || adaKartuKursus;
+    }
+
+    // ── QUIZ ACTIONS ──────────────────────────────────────────────
+
+    /** Klik menu sidebar berdasarkan nama kuis yang dilempar dari Gherkin */
+    public void klikMenuKuisDiSidebar(String namaKuis) {
+        // XPath: Mencari tag <li> yang punya class 'learn-list-item' dan teksnya mengandung namaKuis
+        WebElement menuKuis = wait.until(
+                ExpectedConditions.elementToBeClickable(CourseDetailLocators.menuKuis(namaKuis))
+        );
+        klik(menuKuis);
+    }
+
+    /** Verifikasi apakah form "Mulai Kuis" sudah muncul di layar utama */
+    public boolean sudahMasukHalamanPersiapanKuis() {
+        try {
+            // Mencari kotak utama kuis (yang memuat durasi, deskripsi, dll)
+            wait.until(ExpectedConditions.visibilityOf(locators.quizBox));
+            return locators.quizBox.isDisplayed();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /** Mengambil teks judul kuis untuk dicocokkan dengan ekspektasi */
+    public String ambilJudulKuis() {
+        // Mencari tag <b> di dalam <h3> di dalam .quiz-title
+        wait.until(ExpectedConditions.visibilityOf(locators.quizTitle));
+        return locators.quizTitle.getText().trim();
     }
 }

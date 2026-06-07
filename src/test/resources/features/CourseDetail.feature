@@ -15,3 +15,10 @@ Feature: Course Detail JTK Learn
   Scenario: Klik Kursus Saya menampilkan daftar kursus yang diikuti pelajar
     When pengguna mengklik tombol "Kursus Saya"
     Then sistem menampilkan daftar kursus yang diikuti pelajar
+
+  Scenario: Validasi navigasi dan judul halaman kuis
+    When pengguna memilih course "CyberSecurity"
+    And pengguna mengklik tombol "Lanjutkan Kursus"
+    And pengguna mengklik menu kuis "Kuis 1" pada sidebar navigasi
+    Then pengguna berhasil masuk ke halaman persiapan kuis
+    And judul kuis yang tampil di layar adalah "Kuis 1"

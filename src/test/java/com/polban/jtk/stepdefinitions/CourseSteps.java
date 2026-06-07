@@ -62,4 +62,32 @@ public class CourseSteps {
         );
         System.out.println("[TC-11] LULUS: Daftar kursus yang diikuti pelajar ditampilkan.");
     }
+
+    // ── QUIZ STEPS ────────────────────────────────────────────────
+
+    @When("pengguna mengklik menu kuis {string} pada sidebar navigasi")
+    public void penggunaMengklikMenuKuis(String namaKuis) {
+        coursePage.klikMenuKuisDiSidebar(namaKuis);
+    }
+
+    @Then("pengguna berhasil masuk ke halaman persiapan kuis")
+    public void verifikasiHalamanPersiapan() {
+        Assertions.assertTrue(
+                coursePage.sudahMasukHalamanPersiapanKuis(),
+                "Halaman persiapan kuis (quiz-guide-box) tidak ditemukan!"
+        );
+    }
+
+    @And("judul kuis yang tampil di layar adalah {string}")
+    public void verifikasiJudulKuis(String expectedJudul) {
+        String actualJudul = coursePage.ambilJudulKuis();
+
+        // Memastikan teks yang tampil ("Kuis 1") sama dengan ekspektasi
+        // Kalau webnya kambuh nampilin ID (misal "103"), maka test case otomatis GAGAL di sini.
+        Assertions.assertEquals(
+                expectedJudul,
+                actualJudul,
+                "Judul kuis tidak sesuai! Expected: " + expectedJudul + ", Actual: " + actualJudul
+        );
+    }
 }

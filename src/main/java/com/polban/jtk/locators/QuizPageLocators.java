@@ -22,15 +22,14 @@ public class QuizPageLocators {
 
     /**
      * Locator item menu sidebar kuis berdasarkan nama (dinamis).
-     * Mencari {@code <li>} dengan class 'learn-list-item' yang teksnya mengandung namaKuis.
+     * Mencari {@code <li>} yang teksnya mengandung namaKuis di sidebar navigasi.
      * <p>Tidak bisa menggunakan @FindBy karena parameternya dinamis.</p>
      *
      * @param namaKuis nama kuis yang ditampilkan di sidebar
      */
     public static By menuKuis(String namaKuis) {
         return By.xpath(
-                "//li[contains(@class, 'learn-list-item')" +
-                " and contains(., '" + namaKuis + "')]"
+                "//li[contains(., '" + namaKuis + "')]"
         );
     }
 }
