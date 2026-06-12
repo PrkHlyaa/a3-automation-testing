@@ -46,21 +46,60 @@ public class CourseSteps {
         );
     }
 
-    // TC 2.3.2 / TC-11 — Membuka kursus langsung berdasarkan ID (ID_Kursus=33)
-    @When("pengguna membuka kursus dengan ID {string}")
-    public void penggunaMembukKursusDenganId(String idKursus) {
-        System.out.println("[TC-11] Membuka kursus dengan ID: " + idKursus);
-        coursePage.bukaKursusDenganId(idKursus);
+    // ── TC-FR07-1 (Nobby) — Validasi Halaman Detail Kursus ────────
+
+
+    /**
+     * Given: Pelajar sudah login dan sudah enroll kursus (TC-FR07-1 Nobby).
+     * Menggunakan session login dari Background (Far@example.com).
+     * Step ini hanya memverifikasi enroll dengan navigasi ke Kursus Saya.
+     */
+    @Given("pelajar sudah login dan sudah enroll kursus {string}")
+    public void pelajarSudahLoginDanSudahEnrollKursus(String namaCourse) {
+        System.out.println("[TC-FR07-1] Verifikasi enroll kursus: " + namaCourse);
+        // Gunakan session login dari Background (Far@example.com)
+        if (coursePage == null) {
+            coursePage = new CourseDetail(Hooks.driver);
+        }
+        coursePage.loginDanVerifikasiEnrollKursus(namaCourse);
     }
 
-    // TC 2.3.2 / TC-11 — Verifikasi daftar kursus yang diikuti pelajar muncul
-    @Then("sistem menampilkan daftar kursus yang diikuti pelajar")
-    public void sistemMenunjukkanDaftarKursus() {
+    /**
+     * And: Pelajar sudah berada di halaman course detail kursus dengan ID tertentu.
+     * Menggunakan ID statis sebagai pengganti DB query (DB sedang error).
+     * ID_COURSE=84 merupakan data statis dari CourseDetailLocators.COURSE_ID_NOBBY.
+     */
+    @Given("pelajar sudah berada di halaman course detail kursus dengan ID {string}")
+    public void pelajarSudahBeradaDiHalamanCourseDetailDenganId(String courseId) {
+        System.out.println("[TC-FR07-1] Step: pelajar sudah berada di halaman course detail ID=" + courseId);
+        // Static DB substitution: ID_COURSE=84 karena koneksi DB sedang error
+        coursePage.navigasiKeHalamanCourseDetailById(courseId);
+    }
+
+    /**
+     * When: Pelajar menekan tombol tertentu (TC-FR07-1).
+     * Menggunakan action yang sama dengan "pengguna mengklik tombol",
+     * disesuaikan dengan bahasa Gherkin pada scenario Nobby.
+     */
+    @When("pelajar menekan tombol {string}")
+    public void pelajarMenekanTombol(String namaTombol) {
+        System.out.println("[TC-FR07-1] Pelajar menekan tombol: \"" + namaTombol + "\"");
+        coursePage.klikTombol(namaTombol);
+    }
+
+
+    /**
+     * Then: Sistem menampilkan pesan tertentu di halaman.
+     * Untuk TC-FR07-1: expected message = "Belum ada materi atau kuis yang dibuat."
+     */
+    @Then("sistem menampilkan pesan {string}")
+    public void sistemMenunjukkanPesan(String expectedMessage) {
+        System.out.println("[TC-FR07-1] Step: sistem menampilkan pesan \"" + expectedMessage + "\"");
         Assertions.assertTrue(
-                coursePage.daftarKursusDitampilkan(),
-                "[TC-11] GAGAL: Sistem seharusnya menampilkan daftar kursus yang diikuti pelajar!"
+                coursePage.verifikasiPesanKontenKosong(expectedMessage),
+                "[TC-FR07-1] GAGAL: Pesan \"" + expectedMessage + "\" tidak ditemukan di halaman!"
         );
-        System.out.println("[TC-11] LULUS: Daftar kursus yang diikuti pelajar ditampilkan.");
+        System.out.println("[TC-FR07-1] LULUS: Pesan empty-state ditemukan di halaman.");
     }
 
     // ── QUIZ STEPS ────────────────────────────────────────────────

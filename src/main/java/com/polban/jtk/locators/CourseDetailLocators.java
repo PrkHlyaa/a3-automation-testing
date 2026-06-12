@@ -12,6 +12,14 @@ import org.openqa.selenium.support.FindBy;
  */
 public class CourseDetailLocators {
 
+    // ── TC-FR07-1 Static DB Substitution ──────────────────────────
+    /**
+     * ID_COURSE statis pengganti pengecekan database untuk TC-FR07-1 (Nobby).
+     * Koneksi DB sedang error → ID kursus "Testing" dikode keras di sini.
+     * Jika DB sudah normal, ganti dengan query: SELECT id FROM courses WHERE name='Testing'
+     */
+    public static final String COURSE_ID_NOBBY = "84";
+
     // ── Course Detail ─────────────────────────────────────────────
 
     /** Overlay SweetAlert2 yang muncul setelah aksi tertentu */
@@ -45,6 +53,19 @@ public class CourseDetailLocators {
     /** Elemen judul kuis di dalam heading */
     @FindBy(css = ".quiz-title h3 b")
     public WebElement quizTitle;
+
+    // ── TC-FR07-1 (Nobby) — Pesan Empty State ─────────────────────
+
+    /**
+     * Pesan yang ditampilkan saat kursus tidak memiliki materi maupun kuis.
+     * Selector mencakup berbagai kemungkinan wrapper elemen teks di halaman learn-course.
+     * Expected text: "Belum ada materi atau kuis yang dibuat."
+     */
+    @FindBy(xpath =
+            "//*[contains(normalize-space(text()),'There are no materials') " +
+            "or contains(normalize-space(text()),'quizzes for this course yet')]"
+    )
+    public WebElement pesanKontenKosong;
 
     // ── Locator Dinamis (tetap pakai By) ──────────────────────────
 
