@@ -138,29 +138,41 @@ public class CourseDetail extends BasePage {
 
     /** Klik menu sidebar berdasarkan nama kuis yang dilempar dari Gherkin */
     public void klikMenuKuisDiSidebar(String namaKuis) {
-        // XPath: Mencari tag <li> yang punya class 'learn-list-item' dan teksnya mengandung namaKuis
+        // XPath: Mencari tag <li> yang teksnya mengandung namaKuis
         WebElement menuKuis = wait.until(
                 ExpectedConditions.elementToBeClickable(CourseDetailLocators.menuKuis(namaKuis))
         );
-        klik(menuKuis);
+        // Scroll ke elemen dan klik via JavaScript untuk menembus kemungkinan overlay
+        ((JavascriptExecutor) driver)
+                .executeScript("arguments[0].scrollIntoView({block:'center'});", menuKuis);
+        ((JavascriptExecutor) driver)
+                .executeScript("arguments[0].click();", menuKuis);
+
+        // Tunggu konten kuis dimuat (AJAX load)
+        try { Thread.sleep(3000); } catch (InterruptedException e) { e.printStackTrace(); }
     }
 
     /** Verifikasi apakah form "Mulai Kuis" sudah muncul di layar utama */
     public boolean sudahMasukHalamanPersiapanKuis() {
         try {
-            // Mencari kotak utama kuis (yang memuat durasi, deskripsi, dll)
-            wait.until(ExpectedConditions.visibilityOf(locators.quizBox));
-            return locators.quizBox.isDisplayed();
+            // Menggunakan By locator langsung (bukan @FindBy proxy) agar tidak stale setelah AJAX
+            WebElement quizBox = wait.until(
+                    ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".quiz-guide-box"))
+            );
+            return quizBox.isDisplayed();
         } catch (Exception e) {
+            System.out.println("[Quiz] quiz-guide-box tidak ditemukan: " + e.getMessage());
             return false;
         }
     }
 
     /** Mengambil teks judul kuis untuk dicocokkan dengan ekspektasi */
     public String ambilJudulKuis() {
-        // Mencari tag <b> di dalam <h3> di dalam .quiz-title
-        wait.until(ExpectedConditions.visibilityOf(locators.quizTitle));
-        return locators.quizTitle.getText().trim();
+        // Menggunakan By locator langsung (bukan @FindBy proxy) agar tidak stale setelah AJAX
+        WebElement quizTitle = wait.until(
+                ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".quiz-title"))
+        );
+        return quizTitle.getText().trim();
     }
 
     // ── TC-FR07-1 (Nobby) — Validasi Halaman Detail Kursus ────────

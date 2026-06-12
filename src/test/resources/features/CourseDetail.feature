@@ -3,11 +3,18 @@ Feature: Course Detail JTK Learn
   Background:
     Given pengguna sudah login ke JTK Learn
 
-  @Farida
-  Scenario: Membuka course CyberSecurity
+@Zahra
+  # TC ID    : TC-FR07-07 - Positive - Zahra
+  # Module   : Course Detail Navigation
+  # Objektif : Memverifikasi fungsionalitas menu navigasi sidebar untuk mengakses Kuis.
+  # Expected : Ketika item kuis diklik, sistem memuat halaman overview/persiapan kuis
+  #            yang sesuai dengan judul kuis yang diklik.
+  Scenario: Validasi navigasi menuju halaman Kerjakan Kuis
     When pengguna memilih course "CyberSecurity"
     And pengguna mengklik tombol "Lanjutkan Kursus"
-    Then pengguna berhasil masuk ke halaman detail course
+    And pengguna mengklik menu kuis "Kuis 1" pada sidebar navigasi
+    Then pengguna berhasil masuk ke halaman persiapan kuis
+    And judul kuis yang tampil di layar adalah "Kuis 1"
 
   @Nobby
   # TC ID   : TC-FR07-1 - Negative - Nobby
@@ -26,10 +33,12 @@ Feature: Course Detail JTK Learn
     When  pelajar menekan tombol "Lanjutkan Kursus"
     Then  sistem menampilkan pesan "There are no materials or quizzes for this course yet"
 
-  @Zahra
-  Scenario: Validasi navigasi dan judul halaman kuis
+  @Farida
+  # TC ID    : TC-FR07-02 - Positive - Farida
+  # Module   : Course Detail Functionality
+  # Objektif : Memastikan pelajar dapat mengakses halaman detail kursus dari dashboard.
+  # Expected : Halaman dimuat dan menampilkan keadaan awal (default) sesuai FR07
+  Scenario: Membuka course CyberSecurity
     When pengguna memilih course "CyberSecurity"
     And pengguna mengklik tombol "Lanjutkan Kursus"
-    And pengguna mengklik menu kuis "Kuis 1" pada sidebar navigasi
-    Then pengguna berhasil masuk ke halaman persiapan kuis
-    And judul kuis yang tampil di layar adalah "Kuis 1"
+    Then pengguna berhasil masuk ke halaman detail course

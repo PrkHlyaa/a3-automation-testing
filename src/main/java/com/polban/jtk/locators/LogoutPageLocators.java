@@ -3,11 +3,6 @@ package com.polban.jtk.locators;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
-/**
- * Semua web locator untuk halaman Dashboard JTK Learn.
- * Kelas ini HANYA berisi definisi selektor — tidak ada logika aksi.
- * Menggunakan @FindBy (Page Factory pattern) untuk deklarasi elemen.
- */
 public class LogoutPageLocators {
 
     /** Menu profil pengguna di navbar */
