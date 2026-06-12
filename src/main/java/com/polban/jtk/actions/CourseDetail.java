@@ -2,13 +2,14 @@ package com.polban.jtk.actions;
 
 import java.time.Duration;
 
-import com.polban.jtk.locators.CourseDetailLocators;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.openqa.selenium.JavascriptExecutor;
+
+import com.polban.jtk.locators.CourseDetailLocators;
 
 /**
  * Action methods untuk halaman Course Detail & Quiz JTK Learn.
@@ -27,7 +28,12 @@ public class CourseDetail extends BasePage {
 
     /** Klik card kursus berdasarkan nama yang ditampilkan */
     public void pilihCourse(String namaCourse) {
-        // Locator dinamis — tetap menggunakan By karena @FindBy tidak mendukung parameter runtime
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+
+        // Menyimpan URL sebelum klik untuk debugging
+        String urlSebelumKlik = driver.getCurrentUrl();
+        System.out.println("[pilihCourse] URL sebelum klik card: " + urlSebelumKlik);
+
         WebElement card = driver.findElement(CourseDetailLocators.cardCourse(namaCourse));
 
         ((JavascriptExecutor) driver)
@@ -35,14 +41,24 @@ public class CourseDetail extends BasePage {
         ((JavascriptExecutor) driver)
                 .executeScript("arguments[0].click();", card);
 
-        // Tunggu halaman course detail selesai dimuat sebelum lanjut ke langkah berikutnya
-        try { Thread.sleep(3000); } catch (InterruptedException e) { e.printStackTrace(); }
+        try {
+            wait.until(ExpectedConditions.presenceOfElementLocated(
+                    CourseDetailLocators.tombol("Lanjutkan Kursus")
+            ));
+            System.out.println("[pilihCourse] Halaman overview course siap (Tombol 'Lanjutkan Kursus' ditemukan).");
+        } catch (Exception e) {
+            System.out.println("[pilihCourse] URL sudah berubah, lanjut ke step berikutnya.");
+        }
+
         System.out.println("[pilihCourse] URL setelah klik card: " + driver.getCurrentUrl());
     }
 
     /** Klik tombol atau link berdasarkan teks, menangani SweetAlert2 jika masih terbuka */
     public void klikTombol(String namaTombol) {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+
+        String urlSebelumKlik = driver.getCurrentUrl();
+        System.out.println("[klikTombol] URL sebelum klik: " + urlSebelumKlik);
 
         // Tutup SweetAlert2 popup jika masih muncul (agar tidak menghalangi klik)
         try {
@@ -81,8 +97,26 @@ public class CourseDetail extends BasePage {
         ((JavascriptExecutor) driver)
                 .executeScript("arguments[0].click();", tombol);
 
-        // Tunggu sebentar untuk halaman bereaksi
-        try { Thread.sleep(5000); } catch (InterruptedException e) { e.printStackTrace(); }
+        try {
+            wait.until(ExpectedConditions.not(ExpectedConditions.urlToBe(urlSebelumKlik)));
+            System.out.println("[klikTombol] URL berhasil berubah.");
+        } catch (Exception e) {
+            System.out.println("[klikTombol] URL tidak berubah dalam 15 detik.");
+        }
+
+        // Explicit wait: tunggu elemen halaman detail course muncul
+        try {
+            wait.until(ExpectedConditions.or(
+                    ExpectedConditions.presenceOfElementLocated(
+                            By.xpath("//li[contains(@class,'learn-list-item')]")),
+                    ExpectedConditions.visibilityOfElementLocated(
+                            By.cssSelector(".quiz-guide-box, .course-content"))
+            ));
+            System.out.println("[klikTombol] Halaman detail course sudah siap.");
+        } catch (Exception e) {
+            System.out.println("[klikTombol] Elemen halaman detail belum muncul: " + e.getMessage());
+        }
+        
         System.out.println("[klikTombol] URL setelah klik: " + driver.getCurrentUrl());
     }
 
@@ -299,6 +333,20 @@ public class CourseDetail extends BasePage {
             return actualText.contains(expectedMessage);
         } catch (Exception e) {
             System.out.println("[TC-FR07-1] GAGAL: Pesan empty-state tidak ditemukan di halaman. " + e.getMessage());
+            return false;
+        }
+    }
+
+    /** Verifikasi sidebar menampilkan minimal X materi atau Y kuis */
+    public boolean sidebarMenampilkanMateriAtauKuis(int minMateri, int minKuis) {
+        try {
+            wait.until(ExpectedConditions.presenceOfElementLocated(
+                    By.xpath("//li[contains(@class,'learn-list-item')]")));
+            int totalItems = locators.sidebarItems.size();
+            System.out.println("[sidebar] Total item ditemukan: " + totalItems);
+            return totalItems >= minMateri || totalItems >= minKuis;
+        } catch (Exception e) {
+            System.out.println("[sidebar] Item sidebar tidak ditemukan: " + e.getMessage());
             return false;
         }
     }

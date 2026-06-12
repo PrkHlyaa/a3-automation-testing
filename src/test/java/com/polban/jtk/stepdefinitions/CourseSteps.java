@@ -1,10 +1,14 @@
 package com.polban.jtk.stepdefinitions;
 
+import org.junit.jupiter.api.Assertions;
+
 import com.polban.jtk.actions.CourseDetail;
 import com.polban.jtk.actions.LoginPage;
 
-import io.cucumber.java.en.*;
-import org.junit.jupiter.api.Assertions;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 
 public class CourseSteps {
 
@@ -127,6 +131,15 @@ public class CourseSteps {
                 expectedJudul,
                 actualJudul,
                 "Judul kuis tidak sesuai! Expected: " + expectedJudul + ", Actual: " + actualJudul
+        );
+    }
+
+    @Then("sidebar menampilkan minimal {int} materi atau {int} kuis")
+    public void sidebar_menampilkan_minimal_materi_atau_kuis(Integer int1, Integer int2) {
+        boolean isSidebarValid = coursePage.sidebarMenampilkanMateriAtauKuis(int1, int2);
+        Assertions.assertTrue(
+                isSidebarValid,
+                String.format("Sidebar seharusnya menampilkan minimal %d materi atau %d kuis.", int1, int2)
         );
     }
 }

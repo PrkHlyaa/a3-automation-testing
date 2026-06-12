@@ -42,3 +42,4 @@ Feature: Course Detail JTK Learn
     When pengguna memilih course "CyberSecurity"
     And pengguna mengklik tombol "Lanjutkan Kursus"
     Then pengguna berhasil masuk ke halaman detail course
+    And sidebar menampilkan minimal 1 materi atau 1 kuis

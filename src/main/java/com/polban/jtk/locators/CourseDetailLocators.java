@@ -38,6 +38,10 @@ public class CourseDetailLocators {
     @FindBy(css = ".tab-content, .course-list, [class*='course']")
     public WebElement halamanMyCourses;
 
+    /** Daftar item materi/kuis pada sidebar course */
+    @FindBy(xpath = "//li[contains(@class,'learn-list-item')]")
+    public java.util.List<WebElement> sidebarItems;
+
     // ── Quiz ──────────────────────────────────────────────────────
 
     /** Kotak panduan kuis (memuat durasi, deskripsi, dan tombol mulai) */
