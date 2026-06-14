@@ -17,21 +17,19 @@ Feature: Course Detail JTK Learn
     And judul kuis yang tampil di layar adalah "Kuis 1"
 
   @Nobby
-  # TC ID   : TC-FR07-1 - Negative - Nobby
-  # Module  : Course Detail Functionality
-  # Scenario: Validasi halaman Detail Kursus
-  # Given   : Pelajar telah login, enroll kursus, dan berada di halaman course detail
-  # When    : Pelajar menekan tombol "Lanjutkan Kursus"
-  # Test Data: NAMA_COURSE=Testing, ID_COURSE=84
-  # Expected: Jika data detail kursus (materi dan kuis) tidak ada,
-  #           sistem menampilkan pesan "Belum ada materi atau kuis yang dibuat."
-  # Catatan : Pengecekan DB dilakukan secara statis berdasarkan ID_COURSE=84
-  #           karena koneksi database sedang error.
-  Scenario: Validasi halaman Detail Kursus menampilkan pesan ketika tidak ada konten
-    Given pelajar sudah login dan sudah enroll kursus "Testing"
-    And   pelajar sudah berada di halaman course detail kursus dengan ID "84"
+  # TC ID    : TC-FR07-6 - Positive - Nobby
+  # Module   : Course Detail Functionality
+  # Scenario : Validasi navigasi menuju halaman Akses Materi
+  # Given    : Pelajar telah login, sudah enroll kursus "Testing 2", dan berada di halaman course detail
+  # When     : Pelajar menekan navigasi bar pada materi "Apa itu Blackbox testing?"
+  # Test Data: NAMA_COURSE=Testing 2, ID_COURSE=169
+  # Expected : Sistem menampilkan halaman Akses Materi sesuai dengan materi yang dipilih
+  Scenario: Validasi navigasi menuju halaman Akses Materi
+    Given pelajar sudah login dan sudah enroll kursus "Testing 2"
+    And   pelajar sudah berada di halaman course detail kursus dengan ID "169"
     When  pelajar menekan tombol "Lanjutkan Kursus"
-    Then  sistem menampilkan pesan "There are no materials or quizzes for this course yet"
+    And   pelajar menekan navigasi materi "Apa itu Blackbox testing?" pada sidebar
+    Then  sistem menampilkan halaman akses materi yang sesuai
 
   @Farida
   # TC ID    : TC-FR07-02 - Positive - Farida

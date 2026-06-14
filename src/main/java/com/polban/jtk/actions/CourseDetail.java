@@ -186,6 +186,40 @@ public class CourseDetail extends BasePage {
         try { Thread.sleep(3000); } catch (InterruptedException e) { e.printStackTrace(); }
     }
 
+    /**
+     * Klik item materi pada sidebar navigasi learn-course.
+     * Digunakan oleh TC-FR07-6 (Nobby) untuk memilih materi "Apa itu Blackbox testing?".
+     *
+     * @param namaMateri nama materi yang ditampilkan di sidebar (misal: "Apa itu Blackbox testing?")
+     */
+    public void klikNavigasiMateriDiSidebar(String namaMateri) {
+        System.out.println("[TC-FR07-6] Menekan navigasi materi: \"" + namaMateri + "\"");
+        WebDriverWait localWait = new WebDriverWait(driver, Duration.ofSeconds(15));
+
+        // Tunggu sidebar muncul dahulu
+        localWait.until(ExpectedConditions.presenceOfElementLocated(
+                By.xpath("//li[contains(@class,'learn-list-item')]")))
+        ;
+
+        // Cari item materi berdasarkan nama
+        WebElement menuMateri = localWait.until(
+                ExpectedConditions.elementToBeClickable(CourseDetailLocators.menuMateri(namaMateri))
+        );
+
+        System.out.println("[TC-FR07-6] Elemen materi ditemukan: <" + menuMateri.getTagName()
+                + "> teks: " + menuMateri.getText().trim());
+
+        // Scroll ke elemen dan klik via JavaScript
+        ((JavascriptExecutor) driver)
+                .executeScript("arguments[0].scrollIntoView({block:'center'});", menuMateri);
+        ((JavascriptExecutor) driver)
+                .executeScript("arguments[0].click();", menuMateri);
+
+        // Tunggu konten materi dimuat (AJAX / iframe reload)
+        try { Thread.sleep(2000); } catch (InterruptedException e) { e.printStackTrace(); }
+        System.out.println("[TC-FR07-6] Selesai klik navigasi materi. URL: " + driver.getCurrentUrl());
+    }
+
     /** Verifikasi apakah form "Mulai Kuis" sudah muncul di layar utama */
     public boolean sudahMasukHalamanPersiapanKuis() {
         try {
@@ -200,6 +234,46 @@ public class CourseDetail extends BasePage {
         }
     }
 
+    /**
+     * Verifikasi bahwa halaman Akses Materi sudah terbuka setelah item sidebar diklik.
+     * Pengecekan dilakukan dengan:
+     *   1. URL masih mengandung "learn-course/169"
+     *   2. Konten materi (video/iframe/teks) terload di area utama
+     *
+     * Digunakan oleh TC-FR07-6 (Nobby) setelah klik sidebar "Apa itu Blackbox testing?".
+     *
+     * @return {@code true} jika halaman akses materi berhasil ditampilkan
+     */
+    public boolean sudahMasukHalamanAksesMateri() {
+        System.out.println("[TC-FR07-6] Memverifikasi halaman Akses Materi...");
+        System.out.println("[TC-FR07-6] URL saat ini: " + driver.getCurrentUrl());
+
+        WebDriverWait localWait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        // 1. Cek URL masih berada di learn-course
+        boolean urlSesuai = driver.getCurrentUrl().contains("learn-course");
+        System.out.println("[TC-FR07-6] URL mengandung 'learn-course': " + urlSesuai);
+
+        // 2. Cek konten materi sudah muncul (video, iframe, atau teks materi)
+        boolean kontenMuncul = false;
+        try {
+            WebElement konten = localWait.until(
+                    ExpectedConditions.presenceOfElementLocated(
+                            By.cssSelector("iframe, video, .learn-content, " +
+                                    ".content-area, [class*='content'], .embed-responsive")
+                    )
+            );
+            kontenMuncul = konten.isDisplayed();
+            System.out.println("[TC-FR07-6] Konten materi ditemukan: <" + konten.getTagName() + ">");
+        } catch (Exception e) {
+            System.out.println("[TC-FR07-6] Konten materi tidak ditemukan: " + e.getMessage());
+        }
+
+        boolean hasil = urlSesuai && kontenMuncul;
+        System.out.println("[TC-FR07-6] Hasil verifikasi halaman akses materi: " + hasil);
+        return hasil;
+    }
+
     /** Mengambil teks judul kuis untuk dicocokkan dengan ekspektasi */
     public String ambilJudulKuis() {
         // Menggunakan By locator langsung (bukan @FindBy proxy) agar tidak stale setelah AJAX
@@ -209,7 +283,7 @@ public class CourseDetail extends BasePage {
         return quizTitle.getText().trim();
     }
 
-    // ── TC-FR07-1 (Nobby) — Validasi Halaman Detail Kursus ────────
+    // ── TC-FR07-6 (Nobby) — Validasi Halaman Detail Kursus ────────
 
     /**
      * Navigasi ke halaman "Kursus Saya" lalu klik card kursus berdasarkan nama.

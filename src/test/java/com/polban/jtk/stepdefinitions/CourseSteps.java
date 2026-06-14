@@ -50,17 +50,17 @@ public class CourseSteps {
         );
     }
 
-    // ── TC-FR07-1 (Nobby) — Validasi Halaman Detail Kursus ────────
+    // ── TC-FR07-6 (Nobby) — Validasi Navigasi Akses Materi ─────────
 
 
     /**
-     * Given: Pelajar sudah login dan sudah enroll kursus (TC-FR07-1 Nobby).
+     * Given: Pelajar sudah login dan sudah enroll kursus (TC-FR07-6 Nobby).
      * Menggunakan session login dari Background (Far@example.com).
-     * Step ini hanya memverifikasi enroll dengan navigasi ke Kursus Saya.
+     * Step ini navigasi ke Kursus Saya dan memilih card kursus yang dimaksud.
      */
     @Given("pelajar sudah login dan sudah enroll kursus {string}")
     public void pelajarSudahLoginDanSudahEnrollKursus(String namaCourse) {
-        System.out.println("[TC-FR07-1] Verifikasi enroll kursus: " + namaCourse);
+        System.out.println("[TC-FR07-6] Verifikasi enroll kursus: " + namaCourse);
         // Gunakan session login dari Background (Far@example.com)
         if (coursePage == null) {
             coursePage = new CourseDetail(Hooks.driver);
@@ -69,41 +69,47 @@ public class CourseSteps {
     }
 
     /**
-     * And: Pelajar sudah berada di halaman course detail kursus dengan ID tertentu.
-     * Menggunakan ID statis sebagai pengganti DB query (DB sedang error).
-     * ID_COURSE=84 merupakan data statis dari CourseDetailLocators.COURSE_ID_NOBBY.
+     * And: Pelajar sudah berada di halaman course detail kursus dengan ID tertentu (TC-FR07-6).
+     * Navigasi langsung ke /course/169 untuk membuka halaman overview kursus.
      */
     @Given("pelajar sudah berada di halaman course detail kursus dengan ID {string}")
     public void pelajarSudahBeradaDiHalamanCourseDetailDenganId(String courseId) {
-        System.out.println("[TC-FR07-1] Step: pelajar sudah berada di halaman course detail ID=" + courseId);
-        // Static DB substitution: ID_COURSE=84 karena koneksi DB sedang error
+        System.out.println("[TC-FR07-6] Step: pelajar sudah berada di halaman course detail ID=" + courseId);
         coursePage.navigasiKeHalamanCourseDetailById(courseId);
     }
 
     /**
-     * When: Pelajar menekan tombol tertentu (TC-FR07-1).
-     * Menggunakan action yang sama dengan "pengguna mengklik tombol",
-     * disesuaikan dengan bahasa Gherkin pada scenario Nobby.
+     * When: Pelajar menekan tombol tertentu (TC-FR07-6).
      */
     @When("pelajar menekan tombol {string}")
     public void pelajarMenekanTombol(String namaTombol) {
-        System.out.println("[TC-FR07-1] Pelajar menekan tombol: \"" + namaTombol + "\"");
+        System.out.println("[TC-FR07-6] Pelajar menekan tombol: \"" + namaTombol + "\"");
         coursePage.klikTombol(namaTombol);
     }
 
+    /**
+     * And: Pelajar menekan navigasi materi di sidebar (TC-FR07-6 Nobby).
+     * Mengklik item materi "Apa itu Blackbox testing?" pada sidebar navigation bar
+     * di halaman learn-course/169.
+     */
+    @And("pelajar menekan navigasi materi {string} pada sidebar")
+    public void pelajarMenekanNavigasiMateriPadaSidebar(String namaMateri) {
+        System.out.println("[TC-FR07-6] Pelajar menekan navigasi materi: \"" + namaMateri + "\"");
+        coursePage.klikNavigasiMateriDiSidebar(namaMateri);
+    }
 
     /**
-     * Then: Sistem menampilkan pesan tertentu di halaman.
-     * Untuk TC-FR07-1: expected message = "Belum ada materi atau kuis yang dibuat."
+     * Then: Sistem menampilkan halaman Akses Materi yang sesuai (TC-FR07-6 Nobby).
+     * Verifikasi URL masih di learn-course dan konten materi sudah dimuat.
      */
-    @Then("sistem menampilkan pesan {string}")
-    public void sistemMenunjukkanPesan(String expectedMessage) {
-        System.out.println("[TC-FR07-1] Step: sistem menampilkan pesan \"" + expectedMessage + "\"");
+    @Then("sistem menampilkan halaman akses materi yang sesuai")
+    public void sistemMenunjukkanHalamanAksesMateri() {
+        System.out.println("[TC-FR07-6] Step: sistem menampilkan halaman Akses Materi");
         Assertions.assertTrue(
-                coursePage.verifikasiPesanKontenKosong(expectedMessage),
-                "[TC-FR07-1] GAGAL: Pesan \"" + expectedMessage + "\" tidak ditemukan di halaman!"
+                coursePage.sudahMasukHalamanAksesMateri(),
+                "[TC-FR07-6] GAGAL: Halaman Akses Materi tidak ditemukan!"
         );
-        System.out.println("[TC-FR07-1] LULUS: Pesan empty-state ditemukan di halaman.");
+        System.out.println("[TC-FR07-6] LULUS: Halaman Akses Materi berhasil ditampilkan.");
     }
 
     // ── QUIZ STEPS ────────────────────────────────────────────────

@@ -6,13 +6,14 @@ import org.openqa.selenium.support.FindBy;
 
 public class CourseDetailLocators {
 
-    // ── TC-FR07-1 Static DB Substitution ──────────────────────────
+    // ── TC-FR07-6 Test Data (Nobby) ───────────────────────────────
     /**
-     * ID_COURSE statis pengganti pengecekan database untuk TC-FR07-1 (Nobby).
-     * Koneksi DB sedang error → ID kursus "Testing" dikode keras di sini.
-     * Jika DB sudah normal, ganti dengan query: SELECT id FROM courses WHERE name='Testing'
+     * ID_COURSE untuk TC-FR07-6 (Nobby).
+     * Kursus: "Testing 2" → ID 169
+     * Materi target navigasi: "Apa itu Blackbox testing?"
+     * Referensi: https://polban-space.cloudias79.com/jtk-learn/learn-course/169
      */
-    public static final String COURSE_ID_NOBBY = "84";
+    public static final String COURSE_ID_NOBBY = "169";
 
     // ── Course Detail ─────────────────────────────────────────────
 
@@ -52,12 +53,19 @@ public class CourseDetailLocators {
     @FindBy(css = ".quiz-title")
     public WebElement quizTitle;
 
-    // ── TC-FR07-1 (Nobby) — Pesan Empty State ─────────────────────
+    // ── TC-FR07-6 (Nobby) — Halaman Akses Materi ──────────────────
+
+    /**
+     * Kontainer konten materi yang ditampilkan setelah sidebar item materi diklik.
+     * Selector mencakup area konten utama halaman learn-course (video player / konten materi).
+     */
+    @FindBy(css = ".learn-content, .course-content, .content-area, #content-main, [class*='content']")
+    public WebElement kontenMateri;
 
     /**
      * Pesan yang ditampilkan saat kursus tidak memiliki materi maupun kuis.
-     * Selector mencakup berbagai kemungkinan wrapper elemen teks di halaman learn-course.
-     * Expected text: "Belum ada materi atau kuis yang dibuat."
+     * Dipertahankan agar tidak ada compilation error pada method yang masih mereferensikannya.
+     * Expected text: "There are no materials or quizzes for this course yet"
      */
     @FindBy(xpath =
             "//*[contains(normalize-space(text()),'There are no materials') " +
@@ -105,6 +113,21 @@ public class CourseDetailLocators {
     public static By menuKuis(String namaKuis) {
         return By.xpath(
                 "//li[contains(normalize-space(.), '" + namaKuis + "')]"
+        );
+    }
+
+    /**
+     * Locator item menu sidebar materi berdasarkan nama (dinamis).
+     * Mencari {@code <li>} atau {@code <a>} yang teksnya mengandung namaMateri
+     * di dalam navigation bar / sidebar learn-course.
+     * <p>Tidak bisa menggunakan @FindBy karena parameternya dinamis.</p>
+     *
+     * @param namaMateri nama materi yang ditampilkan di sidebar (misal: "Apa itu Blackbox testing?")
+     */
+    public static By menuMateri(String namaMateri) {
+        return By.xpath(
+                "(//li[contains(normalize-space(.), '" + namaMateri + "')]" +
+                " | //a[contains(normalize-space(.), '" + namaMateri + "')])[1]"
         );
     }
 }
