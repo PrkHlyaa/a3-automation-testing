@@ -64,6 +64,21 @@ public class LoginPage extends BasePage {
         }
     }
 
+    // TC 1.1.5 — Klik tombol OK untuk menutup SweetAlert2 popup error
+    public void tutupPopupError() {
+        try {
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+            wait.until(ExpectedConditions.elementToBeClickable(locators.swalTombolOk));
+            locators.swalTombolOk.click();
+            System.out.println("[TC 1.1.5] Tombol tutup popup diklik.");
+            // Tunggu popup benar-benar hilang
+            wait.until(ExpectedConditions.invisibilityOf(locators.swalPopup));
+            System.out.println("[TC 1.1.5] Popup sudah tertutup, halaman Login terlihat kembali.");
+        } catch (Exception e) {
+            System.out.println("[TC 1.1.5] Gagal menutup popup: " + e.getMessage());
+        }
+    }
+
     public boolean sudahDiDashboard() {
         return driver.getCurrentUrl().equals(
                 "https://polban-space.cloudias79.com/jtk-learn/dashboard-pelajar"

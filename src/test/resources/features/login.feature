@@ -22,4 +22,5 @@ Feature: Login JTK Learn
     And   pengguna memasukkan password "apapun123"
     And   pengguna mengklik tombol Login
     Then  muncul pesan error login
+    And   pengguna menutup popup error
     And   pengguna tetap berada di halaman Login

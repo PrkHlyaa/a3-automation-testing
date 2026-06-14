@@ -20,4 +20,8 @@ public class LoginPageLocators {
     /** Popup SweetAlert2 yang muncul saat login gagal */
     @FindBy(css = ".swal2-popup")
     public WebElement swalPopup;
+
+    /** Tombol OK/Tutup pada SweetAlert2 popup */
+    @FindBy(css = ".swal2-confirm")
+    public WebElement swalTombolOk;
 }

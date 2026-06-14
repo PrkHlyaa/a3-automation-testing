@@ -59,6 +59,12 @@ public class LoginSteps {
         );
     }
 
+    // TC 1.1.5 — Klik tombol tutup/OK pada popup SweetAlert2 error
+    @And("pengguna menutup popup error")
+    public void tutupPopupError() {
+        loginPage.tutupPopupError();
+    }
+
     // TC 1.1.5 / 1.5 — Verifikasi pengguna tetap di halaman Login setelah gagal login
     @And("pengguna tetap berada di halaman Login")
     public void verifikasiTetapDiHalamanLogin() {
